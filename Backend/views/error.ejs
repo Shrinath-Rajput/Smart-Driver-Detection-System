@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - DriveAlert</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <h1 class="logo"><i class="fas fa-shield-alt"></i> DriveAlert</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/analyze" class="nav-link">Analyze</a></li>
+                <li><a href="/alerts" class="nav-link">Alerts</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Error Page -->
+    <section style="padding: 100px 0; min-height: 70vh; display: flex; align-items: center; background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);">
+        <div class="container" style="text-align: center;">
+            <div style="font-size: 5rem; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem;">
+                <%= statusCode %>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;"><%= title %></h1>
+            <p style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+                <%= message %>
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/" class="btn btn-lg btn-primary">
+                    <i class="fas fa-home"></i> Go Home
+                </a>
+                <a href="/dashboard" class="btn btn-lg btn-secondary">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: 3rem;">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 DriveAlert | Smart Driver Drowsiness Detection System</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

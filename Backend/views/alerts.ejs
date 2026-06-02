@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert History - Driver Drowsiness Detection</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <h1 class="logo"><i class="fas fa-shield-alt"></i> DriveAlert</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/analyze" class="nav-link">Analyze</a></li>
+                <li><a href="/alerts" class="nav-link active">Alerts</a></li>
+                <li><a href="/about" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1>Alert History</h1>
+            <div class="header-actions">
+                <span class="timestamp" id="timestamp">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="glass-card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div>
+                    <label style="opacity: 0.7; font-size: 0.9rem;">Driver ID</label>
+                    <input type="text" id="driverIdFilter" placeholder="<%= driverId %>" 
+                           style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-md); color: var(--light); margin-top: 0.5rem;">
+                </div>
+                <div>
+                    <label style="opacity: 0.7; font-size: 0.9rem;">Alert Type</label>
+                    <select id="typeFilter" style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-md); color: var(--light); margin-top: 0.5rem;">
+                        <option value="">All Types</option>
+                        <option value="DROWSINESS">Drowsiness</option>
+                        <option value="EMERGENCY">Emergency</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="opacity: 0.7; font-size: 0.9rem;">Status</label>
+                    <select id="statusFilter" style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-md); color: var(--light); margin-top: 0.5rem;">
+                        <option value="">All Status</option>
+                        <option value="AWAKE">Awake</option>
+                        <option value="SLEEPY">Sleepy</option>
+                        <option value="EMERGENCY">Emergency</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: flex-end;">
+                    <button class="btn btn-primary" onclick="applyFilters()" style="flex: 1;">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetFilters()" style="flex: 1;">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Table -->
+        <div class="glass-card">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--glass-border);">
+                            <th style="padding: 1rem; text-align: left; opacity: 0.7; font-weight: 600;">Time</th>
+                            <th style="padding: 1rem; text-align: left; opacity: 0.7; font-weight: 600;">Type</th>
+                            <th style="padding: 1rem; text-align: left; opacity: 0.7; font-weight: 600;">Status</th>
+                            <th style="padding: 1rem; text-align: left; opacity: 0.7; font-weight: 600;">Confidence</th>
+                            <th style="padding: 1rem; text-align: left; opacity: 0.7; font-weight: 600;">Location</th>
+                            <th style="padding: 1rem; text-align: left; opacity: 0.7; font-weight: 600;">SMS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alertsTableBody">
+                        <% if (alerts && alerts.length > 0) { %>
+                            <% alerts.forEach(alert => { %>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem;">
+                                        <%= new Date(alert.created_at).toLocaleString() %>
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <span class="badge badge-<%= alert.alert_type.toLowerCase() %>">
+                                            <%= alert.alert_type %>
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <span class="badge badge-<%= alert.status.toLowerCase() %>">
+                                            <%= alert.status %>
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem; font-weight: 600;">
+                                        <%= (alert.confidence * 100).toFixed(2) %>%
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <% if (alert.maps_link) { %>
+                                            <a href="<%= alert.maps_link %>" target="_blank" class="btn btn-sm btn-outline">
+                                                <i class="fas fa-map-pin"></i> View
+                                            </a>
+                                        <% } else { %>
+                                            <span style="opacity: 0.5;">N/A</span>
+                                        <% } %>
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <i class="fas fa-<%= alert.sms_sent ? 'check-circle' : 'times-circle' %>" 
+                                           style="color: <%= alert.sms_sent ? 'var(--success)' : 'var(--danger)' %>"></i>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" style="padding: 2rem; text-align: center; opacity: 0.5;">
+                                    No alerts found
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div style="display: flex; justify-content: center; gap: 0.5rem; padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                <% if (currentPage > 1) { %>
+                    <a href="/alerts?page=<%= currentPage - 1 %>" class="btn btn-sm btn-secondary">← Previous</a>
+                <% } %>
+                
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>Page <%= currentPage %> of <%= totalPages %></span>
+                </div>
+
+                <% if (currentPage < totalPages) { %>
+                    <a href="/alerts?page=<%= currentPage + 1 %>" class="btn btn-sm btn-secondary">Next →</a>
+                <% } %>
+            </div>
+
+            <div style="padding: 1rem; text-align: center; opacity: 0.6; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                Total Alerts: <%= totalAlerts %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function applyFilters() {
+            const driverId = document.getElementById('driverIdFilter').value || '<%= driverId %>';
+            const type = document.getElementById('typeFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            let url = `/alerts?driver_id=${driverId}`;
+            if (type) url += `&type=${type}`;
+            if (status) url += `&status=${status}`;
+
+            window.location.href = url;
+        }
+
+        function resetFilters() {
+            window.location.href = `/alerts`;
+        }
+
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

@@ -4,3 +4,9 @@ numpy
 matplotlib
 scikit-learn
 pillow
+requests
+python-dotenv
+flask
+flask-cors
+geopy
+twilio

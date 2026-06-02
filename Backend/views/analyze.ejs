@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Detection - Driver Drowsiness Monitoring</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .status-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .status-circle.status-awake {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .status-circle.status-detecting_drowsiness {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-circle.status-emergency {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            animation: pulse 0.5s infinite;
+        }
+        
+        .status-circle.status-no_face {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        }
+        
+        .status-circle.status-idle {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .connection-status {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .connection-status.connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .connection-status.disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-row span:first-child {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .stat-row span:last-child {
+            color: #333;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <h1 class="logo"><i class="fas fa-shield-alt"></i> DriveAlert</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/analyze" class="nav-link active">Analyze</a></li>
+                <li><a href="/alerts" class="nav-link">Alerts</a></li>
+                <li><a href="/about" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-card">
+            <div class="sidebar-header">
+                <h2>Live Detection</h2>
+                <p class="driver-id">Driver: <%= driverId %></p>
+            </div>
+            <div class="sidebar-menu">
+                <a href="/dashboard" class="menu-item">
+                    <i class="fas fa-chart-line"></i> Overview
+                </a>
+                <a href="/analyze" class="menu-item active">
+                    <i class="fas fa-video"></i> Live Detection
+                </a>
+                <a href="/alerts" class="menu-item">
+                    <i class="fas fa-bell"></i> Alerts
+                </a>
+                <a href="/location" class="menu-item">
+                    <i class="fas fa-map-marker-alt"></i> Location
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-header">
+                <h1>Real-Time Live Detection</h1>
+                <div class="header-actions">
+                    <span class="timestamp" id="timestamp">Loading...</span>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <!-- Video Feed -->
+                <div class="card large">
+                    <div class="card-header">
+                        <h3>Live Camera Feed</h3>
+                        <span id="recordingIndicator" style="color: var(--danger); display: none;">
+                            <i class="fas fa-circle"></i> Recording
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div id="videoContainer" style="position: relative; overflow: hidden; border-radius: 8px; background: #000; text-align: center;">
+                            <!-- MJPEG Stream from Python detection service -->
+                            <img id="liveVideo" style="width: 100%; height: auto; display: block; background: #000;" />
+                            <canvas id="canvas" style="display: none;"></canvas>
+                            <p id="videoPlaceholder" style="text-align: center; padding: 3rem; color: var(--gray);">
+                                <i class="fas fa-video"></i> Camera feed will appear here
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status and Connection -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>System Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="margin: 0.5rem 0;"><strong>Connection:</strong> <span id="connectionStatus" class="connection-status disconnected">🔴 Disconnected</span></p>
+                        <p style="margin: 0.5rem 0;"><strong>Detection:</strong> <span id="detectionStatus" style="font-weight: 600; color: #666;">Not Running</span></p>
+                    </div>
+                </div>
+
+                <!-- Detection Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Detection Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="text-align: center;">
+                            <div class="status-circle" id="liveStatusCircle" data-status="IDLE">
+                                <i class="fas fa-pause"></i>
+                            </div>
+                            <div class="status-info" style="margin-top: 1rem;">
+                                <div class="status-value" id="liveStatus" style="font-size: 1.5rem; font-weight: 700; margin: 0.5rem 0;">IDLE</div>
+                                <div id="statusLabel" class="status-label" style="color: #666;">System awaiting detection</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confidence Score -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Confidence Level</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Drowsiness Confidence</span>
+                                <span id="confidenceValue" style="font-weight: 700; color: #666;">0.0%</span>
+                            </div>
+                            <div class="progress" style="height: 25px;">
+                                <div id="confidenceBar" class="progress-bar" role="progressbar" style="width: 0%; background-color: #28a745;"></div>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9rem; opacity: 0.7; margin: 0;">Updates in real-time from AI detection engine</p>
+                    </div>
+                </div>
+
+                <!-- Sleep Counter -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Sleep Counter</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 2.5rem; font-weight: 700; color: #ffc107;">
+                                <span id="sleepCounter">0</span>s
+                            </div>
+                            <div style="opacity: 0.6; margin-top: 0.5rem; font-size: 0.9rem;">Consecutive seconds eyes closed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Detection Controls</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <button id="startDetectionBtn" class="btn btn-success" style="width: 100%;">
+                                <i class="fas fa-play"></i> Start AI Detection
+                            </button>
+                            <button id="stopDetectionBtn" class="btn btn-danger" disabled style="width: 100%;">
+                                <i class="fas fa-stop"></i> Stop Detection
+                            </button>
+                            <button id="restartDetectionBtn" class="btn btn-warning" style="width: 100%;">
+                                <i class="fas fa-redo"></i> Restart Detection
+                            </button>
+                            <button id="viewAlertsBtn" class="btn btn-info" style="width: 100%;">
+                                <i class="fas fa-bell"></i> View Alert History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detection Details -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Detection Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="detectionStats">
+                            <div class="stat-row">
+                                <span>Status</span>
+                                <span>-</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Face Detected</span>
+                                <span>-</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Eyes Detected</span>
+                                <span>-</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>FPS</span>
+                                <span>-</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Driver ID</span>
+                                <span><%= driverId %></span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Session ID</span>
+                                <span style="font-size: 0.8em;">Not started</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Info -->
+                <div id="locationDisplay" class="card" style="display: none;">
+                    <div class="card-header">
+                        <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Location will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Emergency Alert -->
+                <div id="emergencyAlert" style="display: none; grid-column: 1 / -1;">
+                    <!-- Alert will be populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Detection Logs -->
+            <div class="section" style="margin-top: 2rem;">
+                <div class="section-header">
+                    <h2>Live Detection Status</h2>
+                </div>
+                <div id="alertContainer"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Include Socket.IO Client -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include Integrated Detection Script -->
+    <script src="/js/analyze-integrated.js"></script>
+    <script>
+        // Pass driver ID to JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.analysisState) {
+                window.analysisState.driverId = '<%= driverId %>';
+            }
+        });
+    </script>
+</body>
+</html>
