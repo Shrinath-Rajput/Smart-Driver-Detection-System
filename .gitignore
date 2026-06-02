@@ -1,0 +1,10 @@
+.venv/
+logs/
+__pycache__/
+
+Dataset/data/train/
+Dataset/data/test/
+Dataset/data/val/
+
+artifacts/
+*.h5
