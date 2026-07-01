@@ -6,23 +6,10 @@
     <title>Driver Drowsiness Detection - Premium Safety System</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-                <h1 class="logo"><i class="fas fa-shield-alt"></i> DriveAlert</h1>
-                <p class="tagline">Smart Driver Monitoring</p>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="/" class="nav-link active">Home</a></li>
-                <li><a href="/about" class="nav-link">About</a></li>
-                <li><a href="/dashboard?driver_id=DRIVER_001" class="nav-link btn-primary">Dashboard</a></li>
-                <li><a href="/analyze?driver_id=DRIVER_001" class="nav-link btn-secondary">Analyze</a></li>
-            </ul>
-        </div>
-    </nav>
+    <%- include('partials/navbar') %>
 
     <!-- Hero Section -->
     <section class="hero">

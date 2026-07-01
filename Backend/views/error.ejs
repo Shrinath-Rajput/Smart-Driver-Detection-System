@@ -6,22 +6,10 @@
     <title><%= title %> - DriveAlert</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-                <h1 class="logo"><i class="fas fa-shield-alt"></i> DriveAlert</h1>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="/" class="nav-link">Home</a></li>
-                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
-                <li><a href="/analyze" class="nav-link">Analyze</a></li>
-                <li><a href="/alerts" class="nav-link">Alerts</a></li>
-            </ul>
-        </div>
-    </nav>
+    <%- include('partials/navbar') %>
 
     <!-- Error Page -->
     <section style="padding: 100px 0; min-height: 70vh; display: flex; align-items: center; background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);">

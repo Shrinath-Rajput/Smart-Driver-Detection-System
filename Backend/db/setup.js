@@ -44,6 +44,23 @@ async function initializeDatabase() {
             await connection.query(statement);
         }
 
+        // Ensure required columns exist (add migrations for existing DBs)
+        try {
+            const [colRows] = await connection.query(
+                `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?`,
+                [dbConfig.database, 'driver_status', 'alarm_active']
+            );
+
+            if (colRows.length === 0) {
+                await connection.query(
+                    `ALTER TABLE \`${dbConfig.database}\`.driver_status ADD COLUMN alarm_active BOOLEAN DEFAULT FALSE`
+                );
+                console.log("✓ Added missing column 'alarm_active' to driver_status");
+            }
+        } catch (err) {
+            console.warn('Could not verify/add migration columns:', err.message);
+        }
+
         console.log("✓ Database schema initialized");
     } catch (error) {
         console.error("Database initialization error:", error);

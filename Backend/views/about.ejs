@@ -6,23 +6,10 @@
     <title>About - Driver Drowsiness Detection System</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-                <h1 class="logo"><i class="fas fa-shield-alt"></i> DriveAlert</h1>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="/" class="nav-link">Home</a></li>
-                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
-                <li><a href="/analyze" class="nav-link">Analyze</a></li>
-                <li><a href="/alerts" class="nav-link">Alerts</a></li>
-                <li><a href="/about" class="nav-link active">About</a></li>
-            </ul>
-        </div>
-    </nav>
+    <%- include('partials/navbar') %>
 
     <!-- About Section -->
     <section style="padding: 80px 0; background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);">
@@ -48,188 +35,94 @@
                     <p style="opacity: 0.8; line-height: 1.8;">
                         DriveAlert provides real-time drowsiness detection with 98.55% accuracy, immediate alerts, GPS tracking, and comprehensive dashboard monitoring. It's designed for enterprise deployment with professional-grade reliability.
                     </p>
-                </div>
-            </div>
+                        <!-- Navigation -->
+                        <%- include('partials/navbar') %>
 
-            <!-- Technology Stack -->
-            <div style="margin-bottom: 3rem;">
-                <h2 style="text-align: center; margin-bottom: 2rem;">Technology Stack</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                    <div class="glass-card">
-                        <h4 style="color: var(--secondary); margin-bottom: 1rem;">Frontend</h4>
-                        <ul style="opacity: 0.8;">
-                            <li>• EJS Templating Engine</li>
-                            <li>• HTML5 & CSS3 (Glassmorphism)</li>
-                            <li>• Vanilla JavaScript</li>
-                            <li>• Responsive Design</li>
-                        </ul>
-                    </div>
+                        <!-- About Section (wrapped for centered layout) -->
+                        <div class="page-wrapper about-main">
+                            <section class="about-hero primary-section centered">
+                                <h1>Smart Driver Drowsiness Detection</h1>
+                                <p>Advanced AI-powered safety system for professional drivers</p>
+                            </section>
 
-                    <div class="glass-card">
-                        <h4 style="color: var(--secondary); margin-bottom: 1rem;">Backend</h4>
-                        <ul style="opacity: 0.8;">
-                            <li>• Node.js Runtime</li>
-                            <li>• Express.js Framework</li>
-                            <li>• MySQL Database</li>
-                            <li>• RESTful APIs</li>
-                        </ul>
-                    </div>
+                            <div class="about-grid primary-section container">
+                                <div class="glass-card">
+                                    <h3>The Problem</h3>
+                                    <p>Driver drowsiness causes thousands of accidents annually. Traditional solutions lack real-time detection and immediate alerting capabilities. Our system addresses this critical safety gap with cutting-edge AI technology.</p>
+                                </div>
 
-                    <div class="glass-card">
-                        <h4 style="color: var(--secondary); margin-bottom: 1rem;">AI/ML</h4>
-                        <ul style="opacity: 0.8;">
-                            <li>• Python with TensorFlow</li>
-                            <li>• CNN Neural Network</li>
-                            <li>• OpenCV for Vision</li>
-                            <li>• 98.55% Test Accuracy</li>
-                        </ul>
-                    </div>
+                                <div class="glass-card">
+                                    <h3>Our Solution</h3>
+                                    <p>DriveAlert provides real-time drowsiness detection with 98.55% accuracy, immediate alerts, GPS tracking, and comprehensive dashboard monitoring. It's designed for enterprise deployment with professional-grade reliability.</p>
+                                </div>
 
-                    <div class="glass-card">
-                        <h4 style="color: var(--secondary); margin-bottom: 1rem;">Integration</h4>
-                        <ul style="opacity: 0.8;">
-                            <li>• Google Maps API</li>
-                            <li>• Twilio SMS Alerts</li>
-                            <li>• Real-time WebSocket</li>
-                            <li>• GPS Tracking</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+                                <div class="glass-card">
+                                    <h4>Frontend</h4>
+                                    <ul>
+                                        <li>EJS Templating Engine</li>
+                                        <li>HTML5 & CSS3 (Glassmorphism)</li>
+                                        <li>Vanilla JavaScript</li>
+                                        <li>Responsive Design</li>
+                                    </ul>
+                                </div>
 
-            <!-- Key Features -->
-            <div style="margin-bottom: 3rem;">
-                <h2 style="text-align: center; margin-bottom: 2rem;">Key Features</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                    <div class="glass-card">
-                        <h4 style="color: var(--primary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-brain"></i> AI-Powered Detection
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            CNN model trained on thousands of images with 98.55% accuracy in detecting drowsiness states
-                        </p>
-                    </div>
+                                <div class="glass-card">
+                                    <h4>Backend</h4>
+                                    <ul>
+                                        <li>Node.js Runtime</li>
+                                        <li>Express.js Framework</li>
+                                        <li>MySQL Database</li>
+                                        <li>RESTful APIs</li>
+                                    </ul>
+                                </div>
 
-                    <div class="glass-card">
-                        <h4 style="color: var(--primary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-bell"></i> Instant Alerts
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            Immediate audio alarms, SMS notifications, and dashboard updates within milliseconds
-                        </p>
-                    </div>
+                                <div class="glass-card">
+                                    <h4>AI/ML</h4>
+                                    <ul>
+                                        <li>Python with TensorFlow</li>
+                                        <li>CNN Neural Network</li>
+                                        <li>OpenCV for Vision</li>
+                                        <li>98.55% Test Accuracy</li>
+                                    </ul>
+                                </div>
 
-                    <div class="glass-card">
-                        <h4 style="color: var(--primary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-map-marker-alt"></i> GPS Tracking
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            Real-time location tracking with Google Maps integration for emergency response
-                        </p>
-                    </div>
+                                <div class="glass-card">
+                                    <h4>Integration</h4>
+                                    <ul>
+                                        <li>Google Maps API</li>
+                                        <li>Twilio SMS Alerts</li>
+                                        <li>Real-time WebSocket</li>
+                                        <li>GPS Tracking</li>
+                                    </ul>
+                                </div>
+                            </div>
 
-                    <div class="glass-card">
-                        <h4 style="color: var(--primary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-chart-line"></i> Analytics Dashboard
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            Comprehensive real-time dashboard with historical data, statistics, and insights
-                        </p>
-                    </div>
-
-                    <div class="glass-card">
-                        <h4 style="color: var(--primary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-video"></i> Live Monitoring
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            Real-time video feed with face and eye detection for continuous monitoring
-                        </p>
-                    </div>
-
-                    <div class="glass-card">
-                        <h4 style="color: var(--primary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-history"></i> Alert History
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            Complete alert history with timestamps, locations, and incident analysis
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Model Performance -->
-            <div class="glass-card" style="margin-bottom: 3rem;">
-                <h2 style="margin-bottom: 1.5rem;">CNN Model Performance</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--success); margin-bottom: 0.5rem;">
-                            98.49%
+                            <div class="page-wrapper container primary-section">
+                                <div class="glass-card">
+                                    <h2>CNN Model Performance</h2>
+                                    <div class="cards-grid">
+                                        <div class="card">
+                                            <div class="card-body centered">
+                                                <div style="font-size:2rem;font-weight:700;color:var(--success)">98.49%</div>
+                                                <div style="opacity:0.7">Validation Accuracy</div>
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body centered">
+                                                <div style="font-size:2rem;font-weight:700;color:var(--success)">98.55%</div>
+                                                <div style="opacity:0.7">Test Accuracy</div>
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body centered">
+                                                <div style="font-size:2rem;font-weight:700;color:var(--primary)">&lt;100ms</div>
+                                                <div style="opacity:0.7">Detection Latency</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div style="opacity: 0.7;">Validation Accuracy</div>
-                    </div>
-
-                    <div style="text-align: center;">
-                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--success); margin-bottom: 0.5rem;">
-                            98.55%
-                        </div>
-                        <div style="opacity: 0.7;">Test Accuracy</div>
-                    </div>
-
-                    <div style="text-align: center;">
-                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
-                            &lt;100ms
-                        </div>
-                        <div style="opacity: 0.7;">Detection Latency</div>
-                    </div>
-
-                    <div style="text-align: center;">
-                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;">
-                            24/7
-                        </div>
-                        <div style="opacity: 0.7;">Monitoring Capability</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Architecture -->
-            <div class="glass-card" style="margin-bottom: 3rem;">
-                <h2 style="margin-bottom: 1.5rem;">System Architecture</h2>
-                <div style="text-align: center; opacity: 0.8; line-height: 2;">
-                    <p>
-                        <strong>Driver</strong> → <strong>Webcam</strong> → <strong>Python Engine</strong> → 
-                        <strong>CNN Model</strong> → <strong>Analysis</strong> → <strong>Node.js Backend</strong> →
-                    </p>
-                    <p>
-                        <strong>MySQL Database</strong> → <strong>Dashboard</strong> + 
-                        <strong>SMS/GPS</strong> + <strong>Alerts</strong>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Use Cases -->
-            <div style="margin-bottom: 3rem;">
-                <h2 style="text-align: center; margin-bottom: 2rem;">Use Cases</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                    <div class="glass-card">
-                        <h4 style="color: var(--secondary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-car"></i> Long-haul Trucking
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            Monitor drivers on long journeys with continuous drowsiness detection
-                        </p>
-                    </div>
-
-                    <div class="glass-card">
-                        <h4 style="color: var(--secondary); margin-bottom: 0.75rem;">
-                            <i class="fas fa-taxi"></i> Ride-sharing Services
-                        </h4>
-                        <p style="opacity: 0.7; font-size: 0.9rem;">
-                            Ensure passenger safety with real-time monitoring of driver alertness
-                        </p>
-                    </div>
-
-                    <div class="glass-card">
-                        <h4 style="color: var(--secondary); margin-bottom: 0.75rem;">
                             <i class="fas fa-bus"></i> Public Transportation
                         </h4>
                         <p style="opacity: 0.7; font-size: 0.9rem;">
